@@ -8,14 +8,23 @@ import path from 'path';
 import { DetectionResult, PythonBridgeOptions } from '../types/detection';
 
 const DEFAULT_TIMEOUT = 30000; // 30 seconds
-const PYTHON_SCRIPT = path.join(__dirname, '..', '..', '..', 'inference', 'detector.py');
-const VENV_PYTHON = path.join(__dirname, '..', '..', '..', '..', '.hadi', 'Scripts', 'python.exe');
+
+// Get the project root (face-mask-dashboard) from current file location
+const projectRoot = path.resolve(__dirname, '..', '..', '..');
+const PYTHON_SCRIPT = path.join(projectRoot, 'inference', 'detector.py');
+const VENV_PYTHON = path.join(projectRoot, '..', '.hadi', 'Scripts', 'python.exe');
+
+// Log paths on startup
+console.log('[PythonBridge] Python Path:', VENV_PYTHON);
+console.log('[PythonBridge] Script Path:', PYTHON_SCRIPT);
 
 export async function runDetection(
     base64Image: string,
     options: PythonBridgeOptions = {}
 ): Promise<DetectionResult> {
     const { timeout = DEFAULT_TIMEOUT, pythonPath = VENV_PYTHON } = options;
+
+    console.log(`[PythonBridge] Starting detection (image: ${base64Image.substring(0, 50)}...)`);
 
     return new Promise((resolve, reject) => {
         let stdout = '';

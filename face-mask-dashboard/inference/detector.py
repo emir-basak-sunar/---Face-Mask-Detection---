@@ -29,8 +29,8 @@ CLASS_COLORS = {
     2: "#F59E0B"   # Amber
 }
 
-# Model path - relative to project root
-MODEL_PATH = Path(__file__).parent.parent / "best.pt"
+# Model path - best.pt is in the parent directory of face-mask-dashboard
+MODEL_PATH = Path(__file__).parent.parent.parent / "best.pt"
 
 # Global model instance
 model = None
@@ -64,10 +64,17 @@ def decode_image(base64_string: str) -> np.ndarray:
 
 def run_inference(image: np.ndarray) -> dict:
     """Run YOLOv8 inference on image."""
+    import sys
     model = load_model()
     
-    # Run inference
-    results = model(image, verbose=False)[0]
+    # Debug: log image size
+    print(f"[DEBUG] Image shape: {image.shape}", file=sys.stderr)
+    
+    # Run inference with lower confidence threshold
+    results = model(image, verbose=False, conf=0.20)[0]
+    
+    # Debug: log raw results
+    print(f"[DEBUG] Raw boxes: {results.boxes}", file=sys.stderr)
     
     detections = []
     stats = {

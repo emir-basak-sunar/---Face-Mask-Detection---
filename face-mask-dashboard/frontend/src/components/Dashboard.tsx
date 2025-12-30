@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Sidebar } from '@/components/Sidebar';
 import { VideoPlayer } from '@/components/VideoPlayer';
 import { ImageUpload } from '@/components/ImageUpload';
@@ -27,6 +27,17 @@ export function Dashboard() {
     const { detect, detections, stats, isLoading, error, clearResults } = useDetection();
     const { toast } = useToast();
 
+    // Show error toast via useEffect to avoid render-phase state updates
+    useEffect(() => {
+        if (error) {
+            toast({
+                title: 'Tespit Hatası',
+                description: error,
+                variant: 'destructive',
+            });
+        }
+    }, [error, toast]);
+
     const handleImageSelect = useCallback(
         async (base64: string, preview: string) => {
             setImagePreview(preview);
@@ -45,14 +56,6 @@ export function Dashboard() {
         [detect, clearResults, toast]
     );
 
-    // Show error toast
-    if (error) {
-        toast({
-            title: 'Tespit Hatası',
-            description: error,
-            variant: 'destructive',
-        });
-    }
 
     return (
         <div className="min-h-screen bg-background">
@@ -180,12 +183,12 @@ export function Dashboard() {
                                         </div>
                                         <div
                                             className={`px-2 py-0.5 rounded text-xs font-medium ${log.type === 'success'
-                                                    ? 'bg-success/20 text-success'
-                                                    : log.type === 'warning'
-                                                        ? 'bg-warning/20 text-warning'
-                                                        : log.type === 'error'
-                                                            ? 'bg-danger/20 text-danger'
-                                                            : 'bg-primary/20 text-primary'
+                                                ? 'bg-success/20 text-success'
+                                                : log.type === 'warning'
+                                                    ? 'bg-warning/20 text-warning'
+                                                    : log.type === 'error'
+                                                        ? 'bg-danger/20 text-danger'
+                                                        : 'bg-primary/20 text-primary'
                                                 }`}
                                         >
                                             {log.type.toUpperCase()}

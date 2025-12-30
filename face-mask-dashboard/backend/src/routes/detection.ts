@@ -84,7 +84,9 @@ router.post('/detect/base64', async (req: Request, res: Response) => {
             return;
         }
 
+        console.log(`[API] /detect/base64 called with image size: ${image.length} chars`);
         const result = await runDetection(image);
+        console.log(`[API] Detection result:`, JSON.stringify(result).substring(0, 500));
         res.json(result);
     } catch (error) {
         console.error('Detection error:', error);
