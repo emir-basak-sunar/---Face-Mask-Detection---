@@ -71,7 +71,7 @@ def run_inference(image: np.ndarray) -> dict:
     print(f"[DEBUG] Image shape: {image.shape}", file=sys.stderr)
     
     # Run inference with lower confidence threshold
-    results = model(image, verbose=False, conf=0.20)[0]
+    results = model(image, verbose=False, conf=0.65)[0]
     
     # Debug: log raw results
     print(f"[DEBUG] Raw boxes: {results.boxes}", file=sys.stderr)
